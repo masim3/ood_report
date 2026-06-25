@@ -1,0 +1,140 @@
+\documentclass[a4paper]{article}
+
+% if you need to pass options to natbib, use, e.g.:
+%     \PassOptionsToPackage{numbers, compress}{natbib}
+% before loading neurips_2022
+
+
+% ready for submission
+%\usepackage{ofu_xai_2022}
+
+\input{math_commands.tex}
+
+% to compile a preprint version, e.g., for submission to arXiv, add add the
+% [preprint] option:
+%     \usepackage[preprint]{ofu_xai_2022}
+
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+\usepackage[final, nonatbib]{ofu_xai_2022}
+
+% to avoid loading the natbib package, add option nonatbib:
+%    \usepackage[nonatbib]{ofu_xai_2022}
+
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
+
+\usepackage[numbers]{natbib}
+%%%%
+
+\title{Template / Formatting for xAI-Seminars}
+
+
+
+
+\author{%
+  Martin Simons\\
+  Otto-Friedrich University of Bamberg\\
+  Aufbaustr. 11, 96049 Bamberg, Germany\\
+  \texttt{martin.simons@stud.uni-bamberg.de} \\[0.5cm]
+  Seminar: xAI-Sem-M \\
+  Degree: M.Sc. (CitH) \\
+  Matriculation \#: 2188932
+}
+
+
+\begin{document}
+
+
+\maketitle
+\def\va{{\bm{a}}}
+
+\begin{abstract}
+  The abstract paragraph should be indented \nicefrac{1}{2}~inch on
+  both the left- and right-hand margins. Use 10~point type, with a vertical
+  spacing (leading) of 11~points.  The word \textbf{Abstract} must be centered,
+  bold, and in point size 12. Two line spaces precede the abstract. The abstract
+  must be limited to one paragraph.
+\end{abstract}
+
+
+\section{Introduction}
+\label{intro}
+
+Please read the instructions below carefully and follow them faithfully. Those instructions and style file is based on \verb+neurips_2022.tex+ (LPPL v1.3c) and was adapted for the purposes at the Chair of Explainable Machine Learning at the University of Bamberg.
+
+\section{Related Work}
+\label{related}
+
+\section{Methodology}
+\label{meth}
+
+
+\section{Experiments}
+\label{exp}
+
+
+\section{Discussion}
+\label{disc}
+
+\section{Conclusion}
+\label{conc}
+
+
+\bibliography{ood_base}
+\bibliographystyle{abbrvnat}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Use of Large Language Models
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Use of Large Language Models}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Declaration of Authorship
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Declaration of Authorship}
+
+
+{\parindent 0cm
+%%%%%%%%%%%%%%%%%%%%%%%%%%German%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Declaration of Authorship}
+Ich erkläre hiermit gemäß § 9 Abs. 12 APO, dass ich die vorstehende Seminararbeit selbstständig verfasst und keine anderen als die angegebenen Quellen und Hilfsmittel benutzt habe. Des Weiteren erkläre ich, dass die digitale Fassung der gedruckten Ausfertigung der Seminararbeit ausnahmslos in Inhalt und Wortlaut entspricht und zur Kenntnis genommen wurde, dass diese digitale Fassung einer durch Software unterstützten, anonymisierten Prüfung auf Plagiate unterzogen werden kann.\\
+\vspace{2\baselineskip}
+  
+Bamberg, \today
+
+\rule[0.5em]{14em}{0.5pt} \hspace{0.25\linewidth}\rule[0.5em]{14em}{0.5pt}
+\vspace{1em}
+\hspace{4em} (Ort, Datum) \hspace{0.51\linewidth} (Unterschrift)
+}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\appendix
+
+
+\section{Appendix}
+
+
+Optionally include extra information (complete proofs, additional experiments and plots) in the appendix.
+This section will often be part of the supplemental material.
+
+
+\end{document}
