@@ -1,4 +1,4 @@
-\begin{thebibliography}{6}
+\begin{thebibliography}{7}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -16,6 +16,11 @@ F.~Jeleni\'{c}, J.~Juki\'{c}, M.~Tutek, M.~Puljiz, and J.~\v{S}najder.
 \newblock Out-of-distribution detection by leveraging between-layer transformation smoothness.
 \newblock In \emph{International Conference on Learning Representations (ICLR)}, 2024.
 \newblock URL \url{http://arxiv.org/abs/2310.02832}.
+
+\bibitem[Lee et~al.(2018)Lee, Lee, Lee, and Shin]{mahalanobis}
+K.~Lee, K.~Lee, H.~Lee, and J.~Shin.
+\newblock A simple unified framework for detecting out-of-distribution samples and adversarial attacks.
+\newblock \emph{Advances in neural information processing systems}, 31, 2018.
 
 \bibitem[Lu et~al.(2026)Lu, Wang, Sheng, He, Zheng, and Liang]{survey}
 S.~Lu, Y.~Wang, L.~Sheng, L.~He, A.~Zheng, and J.~Liang.
@@ -36,7 +41,7 @@ M.~Xu, Z.~Lian, B.~Liu, and J.~Tao.
 \newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}, 2023.
 \newblock URL \url{http://arxiv.org/abs/2302.11716}.
 
-\bibitem[Zhao et~al.(2024)Zhao, Xu, Gupta, Asthana, Zheng, and Gould]{opt}
+\bibitem[Zhao et~al.(2024)Zhao, Xu, Gupta, Asthana, Zheng, and Gould]{optimalfs}
 Q.~Zhao, M.~Xu, K.~Gupta, A.~Asthana, L.~Zheng, and S.~Gould.
 \newblock Towards optimal feature-shaping methods for out-of-distribution detection.
 \newblock In \emph{International Conference on Learning Representations (ICLR)}, 2024.

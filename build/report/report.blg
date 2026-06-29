@@ -3,48 +3,47 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: report.aux
 The style file: abbrvnat.bst
 Database file #1: ood_base.bib
-Warning--I didn't find a database entry for "optimalfs"
-Warning--I didn't find a database entry for "mahalanobis"
 Warning--I didn't find a database entry for "goodfellow2016"
-You've used 6 entries,
+Warning--I didn't find a database entry for "opt"
+You've used 7 entries,
             2773 wiz_defined-function locations,
-            629 strings with 5837 characters,
-and the built_in function-call counts, 3325 in all, are:
-= -- 264
-> -- 270
+            634 strings with 6043 characters,
+and the built_in function-call counts, 3792 in all, are:
+= -- 302
+> -- 309
 < -- 0
-+ -- 90
-- -- 84
-* -- 296
-:= -- 530
-add.period$ -- 25
-call.type$ -- 6
-change.case$ -- 46
-chr.to.int$ -- 6
-cite$ -- 12
-duplicate$ -- 141
-empty$ -- 244
-format.name$ -- 90
-if$ -- 680
++ -- 103
+- -- 96
+* -- 337
+:= -- 607
+add.period$ -- 28
+call.type$ -- 7
+change.case$ -- 53
+chr.to.int$ -- 7
+cite$ -- 14
+duplicate$ -- 161
+empty$ -- 275
+format.name$ -- 103
+if$ -- 774
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 6
-newline$ -- 45
-num.names$ -- 24
-pop$ -- 103
+missing$ -- 7
+newline$ -- 50
+num.names$ -- 28
+pop$ -- 115
 preamble$ -- 1
-purify$ -- 40
+purify$ -- 46
 quote$ -- 0
-skip$ -- 101
+skip$ -- 118
 stack$ -- 0
-substring$ -- 28
-swap$ -- 11
+substring$ -- 30
+swap$ -- 12
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 66
+type$ -- 77
 warning$ -- 0
-while$ -- 20
+while$ -- 23
 width$ -- 0
-write$ -- 94
-(There were 3 warnings)
+write$ -- 107
+(There were 2 warnings)
