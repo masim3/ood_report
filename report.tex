@@ -67,14 +67,12 @@
   vector before rescoring, and BLOOD, which instead measures the smoothness of the
   network's between-layer transformation. Although the methods share a layer and, in
   their mathematical form, assume no particular architecture, they were developed on
-  different modalities and backbones and never co-evaluated under one protocol. Reading
+  different architecture families and never co-evaluated under one protocol. Reading
   them together, we find three things: the shaping rules succeed only on the
-  architecture they were designed on, with the data-optimized Optimal-FS and the
-  conservative ReAct transferring while the aggressive pruning rules collapse; the
+  architecture they were designed on, with Optimal-FS and ReAct transferring while pruning rules collapse; the
   cluster unifies only partially, as whole-vector ASH and the Jacobian-based BLOOD lie
-  outside the optimization that explains the element-wise rules; and BLOOD, used as a
-  control, shows the OOD signal is not carried by the feature values alone. A distance
-  baseline, Mahalanobis, bounds both settings from above.
+  outside the optimization that explains the element-wise rules. BLOOD, used as a
+  control, shows the OOD signal is not carried by the feature values alone.
 \end{abstract}
 
 
@@ -89,37 +87,32 @@ distribution a model was trained on---has become a basic requirement for deployi
 machine-learning systems in the open world, where the inputs met at test time cannot
 all be anticipated during training and a confidently wrong prediction on an unfamiliar
 input can be costly. The need is sharpened by a shift in how models are built:
-practitioners increasingly rely on large pre-trained models they did not train and
-cannot easily retrain, using them as frozen checkpoints. This makes \emph{post-hoc}
-OOD detection---methods that attach to an already-trained network at inference time,
-add no training cost, and leave its weights untouched---the dominant practical setting,
+real world applications increasingly rely on large pre-trained models that were not fine tuned and
+cannot easily be retrained, used as frozen checkpoints. This makes \emph{post-hoc}
+OOD detection, methods that attach to an already-trained network at inference time,
+add no training cost, and leave its weights untouched \cite{survey}, the dominant practical setting,
 and the one this report studies.
 
-Within this setting, \emph{feature-based} detectors read the penultimate-layer
-representation---the feature vector a network produces just before its final linear
-classifier---rather than the output logits alone. Most form a tight family this report
-calls the \emph{shaping cluster}: ReAct~\citep{react} (rectified activations),
+Within this setting, \emph{feature-based} detectors read intermediate
+representations rather than the output logits alone --- generally features of the penultimate layer.
+ Most form a tight family we call the \emph{ feature shaping cluster}: ReAct~\citep{react} (rectified activations),
 ASH~\citep{ash} (activation shaping), VRA~\citep{vra} (variational rectified
-activation), and Optimal-FS~\citep{optimalfs}\footnote{Our shorthand for the otherwise
-unnamed method of \citet{optimalfs}, after the paper's title \emph{Towards Optimal
-Feature-Shaping Methods}.} each insert a fixed transformation that rewrites the feature
+activation), and Optimal-FS~\citep{optimalfs}\footnote{Since \citet{optimalfs} do not assign a shorthand to their presented method, we have assignd their method the name \emph{Optimal-FS} after the paper's title \emph{Towards Optimal Feature-Shaping Methods} as a reference for this report .} each insert a fixed transformation that rewrites the feature
 vector before the logits are recomputed, sharpening the separation between
 in-distribution (ID) and OOD inputs while leaving ID classification essentially
 unchanged. BLOOD~\citep{blood} (between-layer out-of-distribution detection) offers an
 alternative view of the same representation: rather than reshaping the feature vector,
 it measures how smoothly the network transforms it, on the premise that a trained model
 processes ID inputs more smoothly than OOD ones. Nothing in the mathematical setup of
-these methods refers to a particular architecture---each is defined for any frozen
-classifier with a penultimate layer---so on paper none is restricted to, or excluded
-from, any model family.
+these methods refers to a particular architecture: each is defined for any frozen
+classifier with a penultimate layer. On paper, none of the methods are restricted to any model family.
 
 This report reads the five methods together. The shaping cluster rests on a shared
-assumption---that the discriminative OOD signal resides in the penultimate feature
-vector and can be recovered by reshaping it---and BLOOD, by reading a property of the
+assumption, that the discriminative OOD signal resides in the penultimate feature
+vector and can be recovered by reshaping it. BLOOD, by reading a property of the
 transformation rather than editing the vector, serves as a control on that assumption.
-Because the methods were developed on different modalities and backbones and never
-co-evaluated under a single protocol, the report compares them with that
-incomparability in mind, asking three questions in turn: why the same method succeeds
+Because the methods were developed on different architecture families and never
+co-evaluated under a single protocol, a comparison accounts for that by only asking three questions: why the same method succeeds
 on some architectures and fails on others, how far the shaping cluster can be unified,
 and whether the OOD signal lies in the feature values or in the transformation applied
 to them.
@@ -137,24 +130,24 @@ training data, from \emph{training-agnostic} ones that operate on a frozen model
 second cut separates \emph{test-time adaptive} methods, which update running
 statistics from test batches, from \emph{post-hoc} methods, which score each input
 from a single forward pass. All five methods studied here are training-agnostic and
-post-hoc---the lightweight setting that dominates practice.
+post-hoc.
 
 Post-hoc detectors differ in which model-internal quantity they read: the logits
-(e.g.\ MSP, MaxLogit, energy), a feature-space distance (e.g.\ Mahalanobis), a
+(e.g.\ MSP\cite{MSP}, MaxLogit, Energy\cite{energy}), a feature-space distance (e.g.\ Mahalanobis \cite{mahalanobis}), a
 gradient, the penultimate representation, or an estimated density. This report
 concentrates on the \emph{feature-based} family, which reads the penultimate
 activation vector $\mathbf{z} \in \mathbb{R}^{M}$ produced before the linear head
 $\mathbf{W} \in \mathbb{R}^{M \times C}$. Within it, \citet{survey} separate methods
 that reshape $\mathbf{z}$ directly from those that read a statistical property of it.
-The first branch---\emph{feature shaping}---replaces $\mathbf{z}$ with $f(\mathbf{z})$
+The first branch \emph{feature shaping}, replaces $\mathbf{z}$ with $ \bar{\mathbf{z}}=f(\mathbf{z})$
 before the logits are recomputed, with $f$ chosen to sharpen the ID/OOD gap while
-leaving ID accuracy intact; ReAct~\cite{react}, ASH~\cite{ash}, VRA~\cite{vra}, and
+leaving ID accuracy intact; ReAct~\cite{react}, VRA~\cite{vra}, and
 Optimal-FS~\cite{optimalfs} form a progression from hand-designed rules toward
 Optimal-FS's optimization view, which recovers the earlier rules as approximations to
-a single ID-only optimum. BLOOD~\cite{blood} sits in the second branch: it leaves
+a single ID-only optimum as an element-wise operation, complemented by ASH~\cite{ash}, which performs whole vector modifications. BLOOD~\cite{blood} sits in the second branch: it leaves
 $\mathbf{z}$ untouched and measures the smoothness of the network's intermediate
 transformation through the feature Jacobian, and here serves as the control that
-isolates the shaping cluster's shared assumption---that the OOD signal resides in
+isolates the shaping cluster's shared assumption: that the OOD signal resides in
 $\mathbf{z}$ itself.
 
 % Follows \ref{subsec:taxonomy} within Related Work.
@@ -162,24 +155,21 @@ $\mathbf{z}$ itself.
 \label{subsec:access}
 
 Beyond \emph{which} quantity a method reads, \citet{blood} note a second,
-deployment-relevant axis---the \emph{access} a method requires. \emph{Black-box}
+deployment-relevant axis, the \emph{access} a method requires. \emph{Black-box}
 methods need only inputs and outputs; \emph{white-box} methods also need the weights
 but no data; \emph{open-box} methods additionally need training data, an OOD
-validation set, or training intervention. This axis cuts across the cluster:
+validation set, or training intervention. This taxonomy further differentiates the analyzed methods:
 ASH~\cite{ash} and BLOOD~\cite{blood} use no training data and are white-box, whereas
 ReAct~\cite{react}, VRA~\cite{vra}, and Optimal-FS~\cite{optimalfs} fit thresholds or
-shaping functions to ID data and are open-box---so the sharp line is not BLOOD
-against the shaping cluster but the data-free methods (ASH, BLOOD) against the
-ID-data-dependent ones. The strongest open-box reference point, the Mahalanobis
-distance detector~\cite{mahalanobis}---which fits a class-conditional Gaussian to ID
-features and scores by distance to the nearest class mean---belongs to neither
-paradigm; it appears only as a benchmark ceiling in the Optimal-FS and BLOOD
+shaping functions to ID data and are open-box. The strongest open-box reference point that is used as a benchmark against all methods, the Mahalanobis
+distance detector~\cite{mahalanobis} which fits a class-conditional Gaussian to ID
+features and scores by distance to the nearest class mean appears in the Optimal-FS and BLOOD
 experiments, to which we defer it.
 
 \section{Methodology}
 \label{sec:methodology}
 
-We consider a classifier pre-trained on in-distribution (ID) data and held frozen.
+We consider a classifier pre-trained on in-distribution data and held frozen.
 For an input $\mathbf{x}$, the backbone produces a penultimate feature vector
 $\mathbf{z} \in \mathbb{R}^{M}$, which a linear head $\mathbf{W}$ maps to $C$ class
 logits. A post-hoc detector reduces the network's response to a scalar score
@@ -188,13 +178,19 @@ threshold. Detection is thus a thresholding rule
 \begin{equation}
 G_\lambda : \mathbb{R} \to \{\text{ID}, \text{OOD}\},
 \end{equation}
-parameterized by a threshold $\lambda$, that labels $\mathbf{x}$ by comparing
-$s(\mathbf{x})$ to $\lambda$. The rule $G_\lambda$ is common to every method; the
-methods differ only in how the score $s$ is computed from the frozen network and in
-its orientation (which side of $\lambda$ denotes ID). Detection quality is reported
+parameterized by a threshold $\lambda$, that labels $\mathbf{x}$ by comparing its score
+to $\lambda$. The rule $G_\lambda$ is common to every method; the methods differ in how
+that score is \emph{produced} from the frozen network and in its orientation (which
+side of $\lambda$ denotes ID). Most produce it by applying a logit score
+$s : \mathbb{R}^{C} \to \mathbb{R}$ (MSP, MaxLogit, or energy) to the network's logits;
+BLOOD is the exception, skipping $s$ and computing its scalar directly. Detection quality is reported
 with the two standard metrics, AUROC (area under the receiver operating characteristic
 curve, a threshold-free measure of separability) and FPR95 (false positive rate at
-$95\%$ true positive rate).
+$95\%$ true positive rate). Fixing $\lambda$ is orthogonal to the score and identical
+across methods---AUROC is threshold-free, and FPR95 fixes $\lambda$ at $95\%$
+true-positive rate for every method alike---so the white-box/open-box distinction
+(Section~\ref{subsec:access}) concerns only what computing the score requires, not
+threshold calibration.
 
 \subsection{Feature Shaping}
 \label{subsec:shaping}
@@ -205,19 +201,17 @@ scored. The detector then factors into a shaping stage and a scoring stage,
 \begin{equation}
 f : \mathbb{R}^{M} \to \mathbb{R}^{M}, \qquad
 s : \mathbb{R}^{C} \to \mathbb{R}, \qquad
-s_{\mathrm{shaped}}(\mathbf{x}) = s\big(\mathbf{W} f(\mathbf{z})\big),
+s(\mathbf{x}) = s\big(\mathbf{W} f(\mathbf{z})\big),
 \end{equation}
-and the sample is flagged by $G_\lambda\big(s_{\mathrm{shaped}}(\mathbf{x})\big)$.
+and the sample is flagged by $G_\lambda\big(s(\mathbf{x})\big)$.
 The score $s$ is a standard logit-based score (MSP, MaxLogit, or energy), for which
 a lower value indicates OOD; crucially, the choice of $s$ is orthogonal to the
 shaping function $f$, a separation Optimal-FS later exploits. Setting
 $f = \mathrm{id}$ recovers the unshaped baseline. Shaping functions are
 \emph{element-wise} when $f$ acts coordinatewise, $\bar{z}_i = f(z_i)$, and
-\emph{whole-vector} when the transformation of one coordinate depends on the others;
-this distinction, carried entirely by the single symbol $f$, separates the methods
-below.
+\emph{whole-vector} when the transformation of one coordinate depends on the others.
 
-\subsection{ReAct and VRA}
+\subsubsection{ReAct and VRA}
 \label{subsec:react-vra}
 
 ReAct~\citep{react} and VRA~\citep{vra} are both element-wise. ReAct clips each
@@ -242,25 +236,23 @@ z_i & \alpha \leq z_i \leq \beta, \\
 \beta & z_i > \beta .
 \end{cases}
 \end{equation}
-This strictly generalizes ReAct, recovered as the special case $\alpha = 0$: VRA-P
+This generalizes ReAct, included as the special case $\alpha = 0$ \cite{vra}: VRA-P
 adds a lower cut that zeroes the abnormally small activations ReAct leaves in place.
 Both methods fit their thresholds to ID data and are therefore data-dependent,
-placing them in the open-box category (cf.\ Section~\ref{subsec:access}). The amplification of mid-range activations
-(VRA+) and a feature--logit combined score (VRA++) are further refinements that
-depart from pure shaping; we summarize them in the appendix.
+placing them in the open-box category (cf.\ Section~\ref{subsec:access}).
 
-\subsection{ASH}
+\subsubsection{ASH}
 \label{subsec:ash}
 
 ASH~\citep{ash} operates on the whole vector. For each sample it computes the $p$th
 percentile $t$ of that sample's own activations, prunes everything below $t$ to
-zero, and then treats the surviving activations in one of three ways: ASH-P leaves
+zero, and then treats the surviving asctivations in one of three ways: ASH-P leaves
 them unchanged, ASH-B sets them all to a common constant, and ASH-S---the version we
 take as canonical---scales the survivors by a factor that restores the pre-pruning
 activation mass,
 \begin{equation}
 \label{eq:ash}
-f_{\mathrm{ASH\text{-}S}}(z_i) =
+[f_{\mathrm{ASH\text{-}S}}(z)]_{i} =
 \begin{cases}
 z_i \cdot \exp\!\left( s_1 / s_2 \right) & z_i \geq t,\\[2pt]
 0 & z_i < t,
@@ -278,7 +270,7 @@ therefore white-box (cf.\ Section~\ref{subsec:access}). An extreme ablation, ASH
 surviving values with random ones; we return to it in the discussion, as it bears on
 what ASH actually exploits.
 
-\subsection{Optimal-FS}
+\subsubsection{Optimal-FS}
 \label{subsec:optfs}
 
 Optimal-FS~\citep{optimalfs} recasts element-wise shaping as an optimization
@@ -296,8 +288,7 @@ $\mathbf{I}(\mathbf{z})$, giving $\bar{\ell}_{\max} = \boldsymbol{\theta}^{\top}
 \mathbf{I}(\mathbf{z})$. The shaping vector $\boldsymbol{\theta}$ is then optimized to
 separate the ID and OOD maximum logits under a norm constraint; solved with OOD data it
 closely matches the element-wise rules above, recovering them as approximations to a
-common optimum. Dropping the OOD term, which contributes little beyond the ID
-direction, gives a closed-form solution from ID data alone (the optimization problem
+common optimum. Dropping the OOD term gives a closed-form solution from ID data alone (the optimization problem
 and its reduction are in Appendix~\ref{app:derivations}),
 \begin{equation}
 \boldsymbol{\theta}^{\star} = \frac{\sqrt{K}}
@@ -312,7 +303,8 @@ whole-vector methods such as ASH, which the authors name as an open problem.
 Second, like ReAct and VRA, it depends on ID data, making it open-box
 (cf.\ Section~\ref{subsec:access}).
 
-\subsection{BLOOD}
+\subsection{Between-Layer Smoothness}
+\subsubsection{BLOOD}
 \label{subsec:blood}
 
 BLOOD~\citep{blood} reads a different signal from the same region of the network.
@@ -346,17 +338,18 @@ making it white-box (cf.\ Section~\ref{subsec:access}).
 \section{Experiments}
 \label{sec:experiments}
 
-The five methods were never evaluated under a shared protocol, and no honest unified
-leaderboard exists: they differ in modality (vision vs.\ text), backbone, OOD-dataset
-suite, and scoring function. Rather than force a comparison the literature does not
-support, we read the evidence as two internally consistent \emph{islands}---vision
-feature shaping and text between-layer smoothness---and treat their incomparability
-as itself a finding: these methods target different deployment settings, and their
-relative merits are only defined within a setting. All figures below are reproduced
-from the cited papers, not independently re-run, and are comparable only within an
-island.
+The five methods were never evaluated under a shared protocol, therefore no unified
+leaderboard exists: they differ in backbone, dataset suite, and scale. The organizing
+axis the evidence does support is \emph{architecture}, not modality: the shaping
+cluster is at home on convolutional networks (CNNs), while the last-layer smoothness of
+BLOOD$_L$ is at home on transformers, each degrading sharply on the other's
+architecture. We therefore read the evidence as two architecture-defined
+\emph{islands}---a CNN-optimized shaping island and a transformer-optimized smoothness
+island---and treat that split as itself a finding. All figures below are reproduced from
+the cited papers, not independently re-run, and a direct cross-island ranking is
+precluded by their differing scales and suites.
 
-\subsection{Vision: the shaping cluster under one protocol}
+\subsection{Feature Shaping: the CNN Island}
 \label{subsec:exp-vision}
 
 Optimal-FS~\citep{optimalfs} provides the only head-to-head evaluation of the shaping
@@ -373,43 +366,33 @@ the high $70$s), and Optimal-FS holds across the board ($83.0$ average, $82.7$ o
 ViT-B-16). So the cluster's apparent unity is conditional on its home architecture; the
 clip-based ReAct and the ID-optimized Optimal-FS generalize, while the percentile-prune
 methods do not. On the smaller-scale CIFAR benchmarks, feature shaping as a whole
-underperforms simple logit baselines, with Optimal-FS competitive but not dominant. Two
-caveats apply: these numbers come from a paper with a stake in the comparison, and the
-eight-dataset ImageNet averaging differs from the four-dataset suites used in the
-original ASH and ReAct papers.
+underperforms simple logit baselines, with Optimal-FS competitive but not dominant.
 
-\subsection{Text: between-layer smoothness}
+\subsection{Between-Layer Smoothness: the Transformer Island}
 \label{subsec:exp-text}
 
-BLOOD~\citep{blood} evaluates a disjoint setting---text classification with RoBERTa and
-ELECTRA over eight ID datasets---so it neither confirms nor contradicts the vision
-results. Among methods requiring no training data (white/black-box), BLOOD$_L$ is the
-strongest on most datasets, and more consistently than the all-layer variant BLOOD$_M$;
-the authors accordingly focus on BLOOD$_L$, attributing its edge to the final layer
-absorbing the most training-driven change. The advantage is more consistent on ELECTRA than on RoBERTa, with BLOOD$_L$
-significantly improving over the MSP baseline on six of the eight ELECTRA
-datasets~\citep{blood}. Notably, the two shaping methods that appear here, ASH and
-ReAct, are only middling, indicating that vision-tuned shaping does not transfer to
-text. BLOOD's grouping confirms our access axis (Section~\ref{subsec:access}): its Table~1
-splits the baselines into white/black-box and open-box columns, filing ASH as
-white-box but ReAct as \emph{open-box}---explicitly because ReAct's clip uses the
-$90$th percentile of the \emph{training-data} activations, the same data-dependence
-criterion our axis applies. BLOOD's open-box set is therefore
-ReAct, ENSM (ensemble), TEMP (temperature scaling), and Mahalanobis, so the
-data-free/data-dependent line we draw
-coincides with BLOOD's rather than cutting more strictly than it.
+BLOOD~\citep{blood} is evaluated mainly on text classification with RoBERTa and
+ELECTRA over eight ID datasets. Among methods requiring no training data
+(white/black-box), BLOOD$_L$ is the strongest on most datasets, and more consistently
+than the all-layer variant BLOOD$_M$; the authors accordingly focus on BLOOD$_L$,
+attributing its edge to the final layer absorbing the most training-driven change. An
+image-classification appendix shows this signal is architectural, not textual:
+BLOOD$_L$ stays strong on a fine-tuned Vision Transformer but collapses to near-chance
+on from-scratch CNNs (ResNet-34/50). BLOOD$_L$ is thus at home on transformers
+regardless of modality. Consistent with this, the shaping methods appearing in BLOOD's tables, ASH and
+ReAct, are only middling, indicating CNN-tuned shaping does not transfer to
+transformers.
 
-\subsection{The ceiling, and what the islands show}
+\subsection{Differences between the two Islands}
 \label{subsec:exp-ceiling}
 
 A distance-based open-box method, Mahalanobis distance~\citep{mahalanobis}, bounds both
 islands from above. In BLOOD's comparison it outperforms BLOOD in every setup but one
-(ELECTRA on TREC), and it is consistently the top scorer on the transformer text
-backbones. Its dominance is, however, setting-specific rather than universal: on
+(ELECTRA on TREC), and it is consistently the top scorer on the transformer
+backbones. Its dominance is, however, architecture-specific rather than universal: on
 ImageNet-scale ConvNets it is weak (AUROC $\approx 55$ on ResNet-50 in VRA's
-table~\citep{vra}), where its class-conditional Gaussian assumption is harder to
-satisfy. The islands therefore deliver a structural message, not a numerical ranking:
-each paradigm wins only within its own setting, and a simple distance detector tops both
+table~\citep{vra}). The islands therefore deliver a structural message, not a numerical ranking:
+each paradigm wins on its home architecture, and a simple distance detector tops both
 wherever its distributional assumptions hold.
 
 \section{Discussion}
@@ -421,18 +404,21 @@ shaping cluster unifies (Section~\ref{subsec:disc-unify}), and whether the OOD s
 lies in the feature values or in the transformation applied to them
 (Section~\ref{subsec:disc-carrier}).
 
-\subsection{Architecture dependence}
+\subsection{Impact of Model Architectures}
 \label{subsec:disc-arch}
 
 The transfer failures of Section~\ref{subsec:exp-vision} follow from the mechanisms,
 not from incidental tuning. Optimal-FS reports the pattern directly: for shaping
 methods, convolutional-network performance is negatively correlated with performance on
 other architectures~\citep{optimalfs}. ASH's pruning assumes a redundant, sparse
-representation---excess features of an over-parameterized network~\citep{ash}, a ReLU
-(rectified linear unit) convolutional premise---whereas BLOOD reads transformation
-smoothness in the upper layers of a transformer, where fine-tuning
-concentrates~\citep{blood}. Each method encodes the architecture it was designed on,
-which is why neither transfers.
+representation: excess features of an over-parameterized network~\citep{ash}, a ReLU
+(rectified linear unit) convolutional premise. BLOOD shows the mirror-image dependence:
+BLOOD$_L$ reads smoothness in the final transformation, which carries the OOD signal
+only where training concentrates there---fine-tuned transformers. Its own
+image-classification results bear this out, with BLOOD$_L$ staying strong on a Vision
+Transformer but collapsing on from-scratch CNNs, whose learning sits in the lower
+layers~\citep{blood}. Feature shaping is thus a CNN technology and BLOOD$_L$ a
+transformer one, each encoding the architecture it was built on.
 
 ReAct gives a partial cause. It attributes the abnormal OOD activations to
 batch-normalization statistics estimated on ID data and applied to OOD inputs, making
@@ -461,10 +447,9 @@ methods such as ASH, which it still places inside the general
 $\mathbb{R}^{M} \to \mathbb{R}^{M}$ class~\citep{optimalfs}. ASH is thus excluded by the
 reduction, not the definition, and the whole-vector extension is named as open future
 work~\citep{optimalfs}. Extending this boundary to a case Optimal-FS does not treat, we
-observe that BLOOD lies outside the class: its score is the Frobenius norm of a
+observe, that BLOOD lies outside the class: its score is the Frobenius norm of a
 Jacobian (Eq.~\ref{eq:blood})~\citep{blood}, not a map returning a reshaped feature
-vector, so no extension of
-the optimization can absorb it. This gives three tiers: ReAct and VRA-P inside the solved
+vector, so no extension of the optimization can absorb it. This gives three tiers: ReAct and VRA-P inside the solved
 problem, ASH inside the general class but outside the solved instance, and BLOOD outside
 the class. The first gap is one of tractability; the second is categorical.
 
@@ -496,8 +481,8 @@ incorrect.
 \section{Conclusion}
 \label{conc}
 
-We read five post-hoc, feature-based OOD detectors---the shaping cluster of ReAct,
-ASH, VRA, and Optimal-FS, together with BLOOD---as a single group united by the
+We read five post-hoc, feature-based OOD detectors (the shaping cluster of ReAct,
+ASH, VRA, and Optimal-FS, together with BLOOD) as a single group united by the
 penultimate layer they all act on. Three conclusions follow. First, architecture, not
 mechanism, decides success: shaping rules tuned on ResNet-50 collapse on transformer
 and MLP backbones, and only the conservative clip of ReAct and the ID-optimized shaping
@@ -508,22 +493,22 @@ but whole-vector ASH lies outside the solved instance and BLOOD, scoring a Jacob
 norm, lies outside the shaping class entirely. Third, the OOD signal is narrower than
 the shaping premise suggests: BLOOD recovers signal without touching the feature
 values, and ASH-Rand recovers it without their fine structure. None of these methods is
-best in a setting-free sense; each encodes the architecture and modality it was born
-on, and a simple distance baseline outperforms both paradigms wherever its assumptions
-hold. We leave open whether the whole-vector case admits the same optimization account
+best in a setting-free sense; each encodes the architecture it was built
+on---feature shaping a CNN technology, BLOOD$_L$ a transformer one---and a simple
+distance baseline outperforms both paradigms wherever its assumptions hold. We leave open whether the whole-vector case admits the same optimization account
 that unifies the element-wise rules.
 
 
 \bibliography{ood_base}
 \bibliographystyle{abbrvnat}
 
-
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Use of Large Language Models
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Use of Large Language Models}
 
-
+The LLM Claude Opus 4.8 was used in the initial screeing of scientific literature and the explanation of certain concepts doing the research phase. During the writing of the report, the model was used to propose changes to certain technical passages, the unification of the mathematical notation, the solution of syntactical errors and sanity checks regarding overall structure of the report. 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Declaration of Authorship
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -550,7 +535,7 @@ Bamberg, \today
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\newpage
 
 \appendix
 
@@ -571,7 +556,8 @@ that prevents trivial rescaling,
 \end{equation}
 Dropping the OOD term, on the argument that it contributes little beyond the ID
 direction, leaves the closed-form $\boldsymbol{\theta}^{\star}$ of
-Section~\ref{subsec:optfs}.
+Section~\ref{subsec:optfs} \cite{optimalfs}.
+
 
 For BLOOD, the layer-$l$ smoothness $\phi_l = \|\mathbf{J}_l\|_F^{2}$
 (Eq.~\ref{eq:blood}) is estimated without forming the Jacobian, using $N$ pairs of
@@ -582,9 +568,9 @@ isotropic random probes $\mathbf{v}_i, \mathbf{w}_i$ (zero mean, unit variance),
 \qquad
 \mathbb{E}\big[\hat{\phi}_l(\mathbf{x})\big] = \big\| \mathbf{J}_l \big\|_F^{2},
 \end{equation}
-the isotropy of the probes being what makes the estimator unbiased.
+the isotropy of the probes being what makes the estimator unbiased \cite{blood}.
 
-
+\newpage
 \section{Notation}
 
 
@@ -630,7 +616,7 @@ consistency, the original symbol is given in parentheses.}
 
 \multicolumn{2}{@{}l}{\citet{react}}\\
 \(c\)                     & Activation clip threshold, \(\mathrm{ReAct}(z;c)=\min(z,c)\)\\
-\(S(\cdot)\)              & OOD scoring function (MSP, MaxLogit, Energy, \dots)\\
+\(s(\cdot)\)              & OOD scoring function (MSP, MaxLogit, Energy, \dots)\\
 \(\lambda\)               & OOD decision threshold\\
 \(G_\lambda\)             & OOD detector (in/out rule on \(S\))\\
 \midrule
@@ -644,13 +630,13 @@ consistency, the original symbol is given in parentheses.}
 \(\eta_\alpha,\ \eta_\beta\) & ID quantiles defining \(\alpha,\beta\)\\
 \midrule
 
-\multicolumn{2}{@{}l}{\citet{opt}}\\
+\multicolumn{2}{@{}l}{\citet{optimalfs}}\\
 \(\mathbf{w}^{\max}\)     & Weight vector of the predicted (max-logit) class\\
 \(\theta(\cdot)\)         & Element-wise shaping function, \(\theta(z):=f(z)/z\)\\
 \(\boldsymbol{\theta}\)   & Per-bucket shaping vector, \(\boldsymbol{\theta}\in\mathbb{R}^{K}\)\\
 \(I_{[a,b)}(\mathbf{z})\) & Interval-specific feature impact (ISFI) of bucket \([a,b)\)\\
 \(a_k,\ b_k\)             & Edges of the \(k\)-th bucket\\
-\(K\)                     & Number of buckets \,(\(K=100\))\\
+\(K\)                     & Number of buckets\\
 \midrule
 
 \multicolumn{2}{@{}l}{\citet{blood}}\\

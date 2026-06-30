@@ -3,47 +3,46 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: report.aux
 The style file: abbrvnat.bst
 Database file #1: ood_base.bib
-Warning--I didn't find a database entry for "goodfellow2016"
-Warning--I didn't find a database entry for "opt"
-You've used 7 entries,
+Warning--can't use both volume and number fields in goodfellow2016
+You've used 10 entries,
             2773 wiz_defined-function locations,
-            634 strings with 6043 characters,
-and the built_in function-call counts, 3792 in all, are:
-= -- 302
-> -- 309
-< -- 0
-+ -- 103
-- -- 96
-* -- 337
-:= -- 607
-add.period$ -- 28
-call.type$ -- 7
-change.case$ -- 53
-chr.to.int$ -- 7
-cite$ -- 14
-duplicate$ -- 161
-empty$ -- 275
-format.name$ -- 103
-if$ -- 774
+            648 strings with 6454 characters,
+and the built_in function-call counts, 5179 in all, are:
+= -- 411
+> -- 408
+< -- 2
++ -- 136
+- -- 126
+* -- 452
+:= -- 823
+add.period$ -- 39
+call.type$ -- 10
+change.case$ -- 71
+chr.to.int$ -- 10
+cite$ -- 21
+duplicate$ -- 229
+empty$ -- 389
+format.name$ -- 138
+if$ -- 1063
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 7
-newline$ -- 50
-num.names$ -- 28
-pop$ -- 115
+missing$ -- 11
+newline$ -- 67
+num.names$ -- 40
+pop$ -- 160
 preamble$ -- 1
-purify$ -- 46
+purify$ -- 62
 quote$ -- 0
-skip$ -- 118
+skip$ -- 166
 stack$ -- 0
-substring$ -- 30
-swap$ -- 12
-text.length$ -- 0
+substring$ -- 36
+swap$ -- 19
+text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 77
-warning$ -- 0
-while$ -- 23
+type$ -- 105
+warning$ -- 1
+while$ -- 32
 width$ -- 0
-write$ -- 107
-(There were 2 warnings)
+write$ -- 148
+(There was 1 warning)
