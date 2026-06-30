@@ -71,7 +71,7 @@
   them together, we find three things: the shaping rules succeed only on the
   architecture they were designed on, with Optimal-FS and ReAct transferring while pruning rules collapse; the
   cluster unifies only partially, as whole-vector ASH and the Jacobian-based BLOOD lie
-  outside the optimization that explains the element-wise rules; and BLOOD, used as a
+  outside the optimization that explains the element-wise rules. BLOOD, used as a
   control, shows the OOD signal is not carried by the feature values alone.
 \end{abstract}
 
@@ -94,8 +94,8 @@ add no training cost, and leave its weights untouched \cite{survey}, the dominan
 and the one this report studies.
 
 Within this setting, \emph{feature-based} detectors read intermediate
-representations rather than the output logits alone---typically those of the penultimate layer.
-Most form a tight family we call the \emph{feature shaping cluster}: ReAct~\citep{react} (rectified activations),
+representations rather than the output logits alone --- generally features of the penultimate layer.
+ Most form a tight family we call the \emph{ feature shaping cluster}: ReAct~\citep{react} (rectified activations),
 ASH~\citep{ash} (activation shaping), VRA~\citep{vra} (variational rectified
 activation), and Optimal-FS~\citep{optimalfs}\footnote{Since \citet{optimalfs} do not assign a shorthand to their presented method, we have assigned their method the name \emph{Optimal-FS} after the paper's title \emph{Towards Optimal Feature-Shaping Methods} as a reference for this report.} each insert a fixed transformation that rewrites the feature
 vector before the logits are recomputed, sharpening the separation between
@@ -247,8 +247,8 @@ placing them in the open-box category (cf.\ Section~\ref{subsec:access}).
 ASH~\citep{ash} operates on the whole vector. For each sample it computes the $p$th
 percentile $t$ of that sample's own activations, prunes everything below $t$ to
 zero, and then treats the surviving activations in one of three ways: ASH-P leaves
-them unchanged, ASH-B sets them all to a common constant, and ASH-S, the version we
-take as canonical, scales the survivors by a factor that restores the pre-pruning
+them unchanged, ASH-B sets them all to a common constant, and ASH-S---the version we
+take as canonical---scales the survivors by a factor that restores the pre-pruning
 activation mass,
 \begin{equation}
 \label{eq:ash}
@@ -288,8 +288,8 @@ $\mathbf{I}(\mathbf{z})$, giving $\bar{\ell}_{\max} = \boldsymbol{\theta}^{\top}
 \mathbf{I}(\mathbf{z})$. The shaping vector $\boldsymbol{\theta}$ is then optimized to
 separate the ID and OOD maximum logits under a norm constraint; solved with OOD data it
 closely matches the element-wise rules above, recovering them as approximations to a
-common optimum. Dropping the OOD term gives a closed-form solution from ID data alone \footnote{the optimization problem
-and its reduction are in Appendix~\ref{app:derivations}},
+common optimum. Dropping the OOD term gives a closed-form solution from ID data alone (the optimization problem
+and its reduction are in Appendix~\ref{app:derivations}),
 \begin{equation}
 \boldsymbol{\theta}^{\star} = \frac{\sqrt{K}}
 {\big\| \mathbb{E}_{\mathrm{ID}}[\mathbf{I}(\mathbf{z})] \big\|}\,
@@ -316,7 +316,7 @@ Frobenius norm of that layer's Jacobian $\mathbf{J}_l$,
 \phi_l(\mathbf{x}) = \big\| \mathbf{J}_l(\mathbf{h}_l) \big\|_F^{2},
 \end{equation}
 estimated without forming the Jacobian through an unbiased random-probe estimator
-$\hat{\phi}_l$\footnote{for further explanations, see Appendix~\ref{app:derivations}}. BLOOD uses this
+$\hat{\phi}_l$ (Appendix~\ref{app:derivations}). BLOOD uses this
 quantity directly as its score, $\hat{\phi}_{L-1}(\mathbf{x})$, with
 the \emph{inverted} orientation relative to the shaping cluster: a higher value
 indicates OOD. The detector $G_\lambda$ still applies, only with the sides of

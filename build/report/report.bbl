@@ -7,41 +7,52 @@
 
 \bibitem[Djurisic et~al.(2023)Djurisic, Bozanic, Ashok, and Liu]{ash}
 A.~Djurisic, N.~Bozanic, A.~Ashok, and R.~Liu.
-\newblock Extremely simple activation shaping for out-of-distribution detection.
-\newblock In \emph{International Conference on Learning Representations (ICLR)}, 2023.
+\newblock Extremely simple activation shaping for out-of-distribution
+  detection.
+\newblock In \emph{International Conference on Learning Representations
+  (ICLR)}, 2023.
 \newblock URL \url{http://arxiv.org/abs/2209.09858}.
 
-\bibitem[Goodfellow et~al.(2016)Goodfellow, Bengio, Courville, and Bengio]{goodfellow2016}
+\bibitem[Goodfellow et~al.(2016)Goodfellow, Bengio, Courville, and
+  Bengio]{goodfellow2016}
 I.~Goodfellow, Y.~Bengio, A.~Courville, and Y.~Bengio.
 \newblock \emph{Deep learning}, volume~1.
 \newblock MIT press Cambridge, 2016.
 
 \bibitem[Hendrycks and Gimpel(2017)]{MSP}
 D.~Hendrycks and K.~Gimpel.
-\newblock A baseline for detecting misclassified and out-of-distribution examples in neural networks.
-\newblock In \emph{International Conference on Learning Representations (ICLR)}, 2017.
+\newblock A baseline for detecting misclassified and out-of-distribution
+  examples in neural networks.
+\newblock In \emph{International Conference on Learning Representations
+  (ICLR)}, 2017.
 \newblock URL \url{http://arxiv.org/abs/1610.02136}.
 
-\bibitem[Jeleni\'{c} et~al.(2024)Jeleni\'{c}, Juki\'{c}, Tutek, Puljiz, and \v{S}najder]{blood}
+\bibitem[Jeleni\'{c} et~al.(2024)Jeleni\'{c}, Juki\'{c}, Tutek, Puljiz, and
+  \v{S}najder]{blood}
 F.~Jeleni\'{c}, J.~Juki\'{c}, M.~Tutek, M.~Puljiz, and J.~\v{S}najder.
-\newblock Out-of-distribution detection by leveraging between-layer transformation smoothness.
-\newblock In \emph{International Conference on Learning Representations (ICLR)}, 2024.
+\newblock Out-of-distribution detection by leveraging between-layer
+  transformation smoothness.
+\newblock In \emph{International Conference on Learning Representations
+  (ICLR)}, 2024.
 \newblock URL \url{http://arxiv.org/abs/2310.02832}.
 
 \bibitem[Lee et~al.(2018)Lee, Lee, Lee, and Shin]{mahalanobis}
 K.~Lee, K.~Lee, H.~Lee, and J.~Shin.
-\newblock A simple unified framework for detecting out-of-distribution samples and adversarial attacks.
+\newblock A simple unified framework for detecting out-of-distribution samples
+  and adversarial attacks.
 \newblock \emph{Advances in neural information processing systems}, 31, 2018.
 
 \bibitem[Liu et~al.(2020)Liu, Wang, Owens, and Li]{energy}
 W.~Liu, X.~Wang, J.~D. Owens, and Y.~Li.
 \newblock Energy-based out-of-distribution detection.
-\newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}, 2020.
+\newblock In \emph{Advances in Neural Information Processing Systems
+  (NeurIPS)}, 2020.
 \newblock URL \url{http://arxiv.org/abs/2010.03759}.
 
 \bibitem[Lu et~al.(2026)Lu, Wang, Sheng, He, Zheng, and Liang]{survey}
 S.~Lu, Y.~Wang, L.~Sheng, L.~He, A.~Zheng, and J.~Liang.
-\newblock Out-of-distribution detection: A task-oriented survey of recent advances.
+\newblock Out-of-distribution detection: A task-oriented survey of recent
+  advances.
 \newblock \emph{ACM Computing Surveys}, 58\penalty0 (2):\penalty0 1--39, 2026.
 \newblock \doi{10.1145/3760390}.
 \newblock URL \url{https://dl.acm.org/doi/10.1145/3760390}.
@@ -49,19 +60,25 @@ S.~Lu, Y.~Wang, L.~Sheng, L.~He, A.~Zheng, and J.~Liang.
 \bibitem[Sun et~al.(2021)Sun, Guo, and Li]{react}
 Y.~Sun, C.~Guo, and Y.~Li.
 \newblock React: Out-of-distribution detection with rectified activations.
-\newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}, 2021.
+\newblock In \emph{Advances in Neural Information Processing Systems
+  (NeurIPS)}, 2021.
 \newblock URL \url{http://arxiv.org/abs/2111.12797}.
 
 \bibitem[Xu et~al.(2023)Xu, Lian, Liu, and Tao]{vra}
 M.~Xu, Z.~Lian, B.~Liu, and J.~Tao.
-\newblock {VRA}: Variational rectified activation for out-of-distribution detection.
-\newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}, 2023.
+\newblock {VRA}: Variational rectified activation for out-of-distribution
+  detection.
+\newblock In \emph{Advances in Neural Information Processing Systems
+  (NeurIPS)}, 2023.
 \newblock URL \url{http://arxiv.org/abs/2302.11716}.
 
-\bibitem[Zhao et~al.(2024)Zhao, Xu, Gupta, Asthana, Zheng, and Gould]{optimalfs}
+\bibitem[Zhao et~al.(2024)Zhao, Xu, Gupta, Asthana, Zheng, and
+  Gould]{optimalfs}
 Q.~Zhao, M.~Xu, K.~Gupta, A.~Asthana, L.~Zheng, and S.~Gould.
-\newblock Towards optimal feature-shaping methods for out-of-distribution detection.
-\newblock In \emph{International Conference on Learning Representations (ICLR)}, 2024.
+\newblock Towards optimal feature-shaping methods for out-of-distribution
+  detection.
+\newblock In \emph{International Conference on Learning Representations
+  (ICLR)}, 2024.
 \newblock URL \url{http://arxiv.org/abs/2402.00865}.
 
 \end{thebibliography}

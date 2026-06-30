@@ -247,8 +247,8 @@ placing them in the open-box category (cf.\ Section~\ref{subsec:access}).
 ASH~\citep{ash} operates on the whole vector. For each sample it computes the $p$th
 percentile $t$ of that sample's own activations, prunes everything below $t$ to
 zero, and then treats the surviving activations in one of three ways: ASH-P leaves
-them unchanged, ASH-B sets them all to a common constant, and ASH-S, the version we
-take as canonical, scales the survivors by a factor that restores the pre-pruning
+them unchanged, ASH-B sets them all to a common constant, and ASH-S---the version we
+take as canonical---scales the survivors by a factor that restores the pre-pruning
 activation mass,
 \begin{equation}
 \label{eq:ash}
@@ -288,8 +288,8 @@ $\mathbf{I}(\mathbf{z})$, giving $\bar{\ell}_{\max} = \boldsymbol{\theta}^{\top}
 \mathbf{I}(\mathbf{z})$. The shaping vector $\boldsymbol{\theta}$ is then optimized to
 separate the ID and OOD maximum logits under a norm constraint; solved with OOD data it
 closely matches the element-wise rules above, recovering them as approximations to a
-common optimum. Dropping the OOD term gives a closed-form solution from ID data alone \footnote{the optimization problem
-and its reduction are in Appendix~\ref{app:derivations}},
+common optimum. Dropping the OOD term gives a closed-form solution from ID data alone (the optimization problem
+and its reduction are in Appendix~\ref{app:derivations}),
 \begin{equation}
 \boldsymbol{\theta}^{\star} = \frac{\sqrt{K}}
 {\big\| \mathbb{E}_{\mathrm{ID}}[\mathbf{I}(\mathbf{z})] \big\|}\,
@@ -316,7 +316,7 @@ Frobenius norm of that layer's Jacobian $\mathbf{J}_l$,
 \phi_l(\mathbf{x}) = \big\| \mathbf{J}_l(\mathbf{h}_l) \big\|_F^{2},
 \end{equation}
 estimated without forming the Jacobian through an unbiased random-probe estimator
-$\hat{\phi}_l$\footnote{for further explanations, see Appendix~\ref{app:derivations}}. BLOOD uses this
+$\hat{\phi}_l$ (Appendix~\ref{app:derivations}). BLOOD uses this
 quantity directly as its score, $\hat{\phi}_{L-1}(\mathbf{x})$, with
 the \emph{inverted} orientation relative to the shaping cluster: a higher value
 indicates OOD. The detector $G_\lambda$ still applies, only with the sides of
